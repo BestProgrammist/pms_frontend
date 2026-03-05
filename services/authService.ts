@@ -1,12 +1,10 @@
 // services/authService.ts
-// import api from '@/lib/api';
 import apiClient from '@/lib/api/client';
-import { LoginRequest, LoginResponse, User } from '@/types/user';
-// import { LoginRequest, LoginResponse, User } from '../types/auth';
+import { loginUser, User, UserResponse } from '@/types/user';
 
 export const authApi = {
-  login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', data);
+  login: async (data: loginUser): Promise<UserResponse> => {
+    const response = await apiClient.post<UserResponse>('/auth/login', data);
     return response.data;
   },
 
@@ -20,12 +18,13 @@ export const authApi = {
   },
 
   verifyToken: async (): Promise<boolean> => {
-    const response = await apiClient.get('/auth/verify');
+    const response = await apiClient.get(`/auth/verify`);
     return response.status === 200;
   },
 
-  refreshToken: async (refreshToken: string): Promise<{ access_token: string }> => {
-    const response = await apiClient.post('/auth/refresh', { refresh_token: refreshToken });
+  refreshToken: async (refreshToken: string): Promise<{ accessToken: string }> => {
+    const response = await apiClient.post('/auth/refresh', { refreshToken: refreshToken });
+    console.log("Refresh Token Response:", response);
     return response.data;
   },
 };

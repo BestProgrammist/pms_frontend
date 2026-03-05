@@ -24,20 +24,21 @@ import { Separator } from "@/components/ui/separator"
 import { useAuth } from "../providers/AuthProvider"
 
 const navItems = [
-  { name: "Bosh Sahifa", href: "/", icon: Home },
-  { name: "Tashkilotlar", href: "/company", icon: FileText, badge: 5 },
-  { name: "Binolar", href: "/buildings", icon: Building },
-  { name: "Bo'limlar", href: "/departments", icon: FileText, badge: 5 },
-  { name: "Lokomotivlar", href: "/locomotives", icon: Truck, badge: 42  },
-  { name: "Xodimlar", href: "/employees", icon: Users, badge: 156  },
-  { name: "Ta'mir turlari", href: "/repairtypes", icon: FileText, badge: 7 },
-  { name: "Ta'mirlar", href: "/journals", icon: FileText, badge: 7 },
-  { name: "Omborlar", href: "/warehouses", icon: FileText, badge: 7 },
-  { name: "Uzel agregatlari", href: "/uzelagregats", icon: FileText, badge: 7 },
-  { name: "Kalendar", href: "/calendar", icon: Calendar },
-  { name: "Hisobotlar", href: "/reports", icon: BarChart3 },
-  { name: "Arxiv", href: "/archive", icon: Folder },
-  { name: "Sozlamalar", href: "/settings", icon: Settings },
+  { name: "Bosh Sahifa", href: "/dashboard", icon: Home },
+  { name: "Vagon turlari", href: "/dashboard/vagontypes", icon: Truck},
+  { name: "Vagonlar", href: "/dashboard/vagons", icon: Truck},
+  { name: "Vagon ta'mir muddatlari", href: "/dashboard/vagon-tamir-muddatlari", icon: Truck},
+  { name: "Ta'mir turlari", href: "/dashboard/tamir-turlari", icon: FileText },
+  // { name: "Bo'limlar", href: "/departments", icon: FileText, badge: 5 },
+  // { name: "Lokomotivlar", href: "/locomotives", icon: Truck, badge: 42  },
+  { name: "Xodimlar", href: "/dashboard/users", icon: Users },
+  { name: "Ta'mir jadvallari", href: "/dashboard/tamir-jadvallari", icon: FileText },
+  { name: "Tashkilotlar", href: "/dashboard/tashkilot", icon: Home },
+  // { name: "Uzel agregatlari", href: "/uzelagregats", icon: FileText, badge: 7 },
+  // { name: "Kalendar", href: "/calendar", icon: Calendar },
+  { name: "Hisobotlar", href: "/dashboard/reports", icon: BarChart3 },
+  // { name: "Arxiv", href: "/archive", icon: Folder },
+  { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
 ]
 
 export default function Sidebar() {
@@ -52,8 +53,8 @@ export default function Sidebar() {
         <div className="flex items-center justify-between">
           {!collapsed && (
             <div>
-              <h1 className="text-lg font-bold">Qarshi LD</h1>
-              <p className="text-sm text-muted-foreground">Lokomotiv Depo</p>
+              <h1 className="text-lg font-bold">PMS</h1>
+              <p className="text-sm text-muted-foreground">Tashkiloti</p>
             </div>
           )}
           <Button
@@ -85,11 +86,11 @@ export default function Sidebar() {
                 {!collapsed && (
                   <>
                     <span className="ml-3">{item.name}</span>
-                    {item.badge && (
+                    {/* {item.badge && (
                       <Badge className="ml-auto" variant="destructive">
                         {item.badge}
                       </Badge>
-                    )}
+                    )} */}
                   </>
                 )}
               </Link>

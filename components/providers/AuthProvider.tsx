@@ -2,13 +2,13 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { LoginRequest, User } from '@/types/user';
+import { loginUser, User } from '@/types/user';
 import { authApi } from '@/services/authService';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (data: LoginRequest) => Promise<Boolean>;
+  login: (data: loginUser) => Promise<Boolean>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -39,22 +39,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           logout();
         }
       }
-      
       setIsLoading(false);
     };
     
     initAuth();
   }, []);
 
-  const login = async (data: LoginRequest) => {
+  const login = async (data: loginUser) => {
     try {
       const response = await authApi.login(data);
-      const { user, access_token } = response;
-      
-      localStorage.setItem('token', access_token);
+      const { user, accessToken } = response;
+
+      localStorage.setItem('token', accessToken);
       localStorage.setItem('user', JSON.stringify(user));
       
-      setToken(access_token);
+      setToken(accessToken);
       setUser(user);
       return true;
     } catch (error) {
@@ -65,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('refreshToken');
+    // localStorage.removeItem('refreshToken');
     
     setToken(null);
     setUser(null);
