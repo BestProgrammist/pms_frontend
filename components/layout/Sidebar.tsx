@@ -25,20 +25,20 @@ import { useAuth } from "../providers/AuthProvider"
 
 const navItems = [
   { name: "Bosh Sahifa", href: "/dashboard", icon: Home },
+  { name: "Ta'mir jadvallari", href: "/dashboard/tamir-jadvallari", icon: FileText },
   { name: "Vagon turlari", href: "/dashboard/vagontypes", icon: Truck},
   { name: "Vagonlar", href: "/dashboard/vagons", icon: Truck},
-  { name: "Vagon ta'mir muddatlari", href: "/dashboard/vagon-tamir-muddatlari", icon: Truck},
   { name: "Ta'mir turlari", href: "/dashboard/tamir-turlari", icon: FileText },
+  { name: "Vagon ta'mir muddatlari", href: "/dashboard/vagon-tamir-muddatlari", icon: Truck},
   // { name: "Bo'limlar", href: "/departments", icon: FileText, badge: 5 },
   // { name: "Lokomotivlar", href: "/locomotives", icon: Truck, badge: 42  },
   { name: "Xodimlar", href: "/dashboard/users", icon: Users },
-  { name: "Ta'mir jadvallari", href: "/dashboard/tamir-jadvallari", icon: FileText },
   { name: "Tashkilotlar", href: "/dashboard/tashkilot", icon: Home },
   // { name: "Uzel agregatlari", href: "/uzelagregats", icon: FileText, badge: 7 },
   // { name: "Kalendar", href: "/calendar", icon: Calendar },
-  { name: "Hisobotlar", href: "/dashboard/reports", icon: BarChart3 },
+  // { name: "Hisobotlar", href: "/dashboard/reports", icon: BarChart3 },
   // { name: "Arxiv", href: "/archive", icon: Folder },
-  { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
+  // { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
 ]
 
 export default function Sidebar() {

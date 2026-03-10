@@ -25,6 +25,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useCompleteTamir } from '@/lib/hooks/useTamirJadval'
 import { CheckCircle2, DollarSign } from 'lucide-react'
+import { VagonHolati } from '@/types/vagon'
+import { useUpdateVagonHolati } from '@/lib/hooks/useVagon'
+import { TamirJadval } from '@/types/tamir-jadval'
 
 const formSchema = z.object({
   tamirQiymati: z.number()
@@ -41,12 +44,13 @@ type FormValues = z.infer<typeof formSchema>
 interface CompleteTamirDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  tamirJadval?: any
+  tamirJadval: TamirJadval
   onSuccess?: () => void
 }
 
 export function CompleteTamirDialog({ open, onOpenChange, tamirJadval, onSuccess }: CompleteTamirDialogProps) {
   const completeMutation = useCompleteTamir()
+      const updateHolatiMutation = useUpdateVagonHolati()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -70,6 +74,14 @@ export function CompleteTamirDialog({ open, onOpenChange, tamirJadval, onSuccess
     }
   }, [tamirJadval, form])
 
+   const handleHolatChange = async (id: number, holati: VagonHolati) => {
+        try {
+          await updateHolatiMutation.mutateAsync({ id, holati })
+        } catch (error) {
+          console.error('Holatni o\'zgartirishda xatolik:', error)
+        }
+      }
+
   const onSubmit = async (values: FormValues) => {
     try {
       await completeMutation.mutateAsync({
@@ -78,6 +90,7 @@ export function CompleteTamirDialog({ open, onOpenChange, tamirJadval, onSuccess
         izoh: values.izoh || undefined,
       })
       onSuccess?.()
+      handleHolatChange(tamirJadval.vagonId, VagonHolati.ACTIVE)
     } catch (error) {
       console.error('Form submit error:', error)
     }

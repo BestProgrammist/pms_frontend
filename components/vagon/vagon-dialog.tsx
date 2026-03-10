@@ -45,8 +45,7 @@ const formSchema = z.object({
     error: 'Ishlab chiqarilgan sanani kiriting',
   }),
   bosibOtganKm: z.number()
-    .min(0, 'Bosib o\'tgan km manfiy bo\'lishi mumkin emas')
-    .max(9999999, 'Bosib o\'tgan km juda katta'),
+  .optional(),
   holati: z.nativeEnum(VagonHolati, {
     error: 'Holatni tanlang',
   }),
@@ -73,7 +72,7 @@ export function VagonDialog({ open, onOpenChange, vagon, onSuccess }: VagonDialo
       raqami: '',
       vagonTuriId: undefined,
       ishlabChigarilganSana: '',
-      bosibOtganKm: 0,
+      bosibOtganKm: undefined,
       holati: VagonHolati.ACTIVE,
     },
   })
@@ -194,7 +193,7 @@ export function VagonDialog({ open, onOpenChange, vagon, onSuccess }: VagonDialo
                 name="bosibOtganKm"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bosib o'tgan km *</FormLabel>
+                    <FormLabel>Bosib o'tgan km</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 

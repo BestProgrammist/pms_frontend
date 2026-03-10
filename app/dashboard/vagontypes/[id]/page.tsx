@@ -45,6 +45,8 @@ import { VagonHolati } from '@/types/vagon'
 import { format } from 'date-fns'
 import { uz } from 'date-fns/locale'
 import { Skeleton } from '@/components/ui/skeleton'
+import { VagonTuriDialog } from '@/components/vagon/vagon-turi-dialog'
+import { useState } from 'react'
 
 const holatColors = {
   [VagonHolati.ACTIVE]: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
@@ -68,6 +70,14 @@ export default function VagonTuriDetailPage() {
   const { data: tur, isLoading } = useVagonTuri(id)
   const { data: vagonlarData } = useVagonlar({ vagonTuriId: id })
   const deleteMutation = useDeleteVagonTuri()
+
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<any>(null)
+
+    const handleEdit = (item: any) => {
+    setSelectedItem(item)
+    setDialogOpen(true)
+  }
 
   const handleDelete = async () => {
     if (window.confirm(`"${tur?.nomi}" vagon turini o'chirishni tasdiqlaysizmi?`)) {
@@ -134,11 +144,13 @@ export default function VagonTuriDetailPage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" asChild>
-            <Link href={`/dashboard/vagon-turlari/${id}/edit`}>
+          <Button variant="outline" asChild onClick={() => handleEdit(tur)}>
+            <span>
+            {/* <Link href={`/dashboard/vagon-turlari/${id}/edit`}> */}
               <Edit className="h-4 w-4 mr-2" />
               Tahrirlash
-            </Link>
+            {/* </Link> */}
+            </span>
           </Button>
           <Button variant="destructive" onClick={handleDelete}>
             <Trash2 className="h-4 w-4 mr-2" />
@@ -304,7 +316,7 @@ export default function VagonTuriDetailPage() {
                               </TableCell>
                               <TableCell className="text-right">
                                 <Button variant="ghost" size="sm" asChild>
-                                  <Link href={`/dashboard/vagonlar/${vagon.id}`}>
+                                  <Link href={`/dashboard/vagons/${vagon.id}`}>
                                     <Eye className="h-4 w-4 mr-2" />
                                     Ko'rish
                                   </Link>
@@ -357,10 +369,10 @@ export default function VagonTuriDetailPage() {
                           <TableRow key={muddat.id}>
                             <TableCell>{muddat.tamirTuri?.nomi || 'Noma\'lum'}</TableCell>
                             <TableCell>
-                              <Badge variant="outline">{muddat.muddatOy} oy</Badge>
+                              <Badge variant="outline">{muddat.tamirType === "vaqt"?muddat.muddatOy:muddat.tamirType === "ikkalasi"? muddat.muddatOy: "--"} oy</Badge>
                             </TableCell>
                             <TableCell>
-                              <Badge variant="outline">{muddat.maksimalKm.toLocaleString()} km</Badge>
+                              <Badge variant="outline">{muddat.tamirType === "masofa"?muddat.maksimalKm?.toLocaleString():muddat.tamirType === "ikkalasi"?muddat.maksimalKm?.toLocaleString():"--"} km</Badge>
                             </TableCell>
                             <TableCell>
                               <Badge className="bg-emerald-100 text-emerald-800">
@@ -384,6 +396,18 @@ export default function VagonTuriDetailPage() {
             </TabsContent>
           </Tabs>
         </motion.div>
+
+        {/* Vagon Turi Dialog */}
+              <VagonTuriDialog
+                open={dialogOpen}
+                onOpenChange={setDialogOpen}
+                vagonTuri={selectedItem}
+                onSuccess={() => {
+                  setDialogOpen(false)
+                  setSelectedItem(null)
+                }}
+              />
+
       </div>
     </div>
   )

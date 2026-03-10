@@ -1,3 +1,6 @@
+import { IstamirType, TamirTuri } from "./tamir";
+import { TamirHolati } from "./tamir-jadval";
+
 // types/vagon.ts
 export enum VagonHolati {
   ACTIVE = 'active',
@@ -36,7 +39,7 @@ export interface Vagon {
   bosibOtganKm: number;
   holati: VagonHolati;
   yaratilganVaqt: Date;
-  vagonTuri?: VagonTuri;
+  vagonTuri: VagonTuri;
   tamirJadvallari?: TamirJadval[];
 }
 
@@ -44,7 +47,7 @@ export interface CreateVagonDto {
   raqami: string;
   vagonTuriId: number;
   ishlabChigarilganSana: string;
-  bosibOtganKm: number;
+  bosibOtganKm?: number;
   holati: VagonHolati;
 }
 
@@ -59,8 +62,9 @@ export interface UpdateVagonDto {
 export interface VagonTamirMuddati {
   id: number;
   vagonTuriId: number;
-  muddatOy: number;
-  maksimalKm: number;
+  muddatOy?: number;
+  maksimalKm?: number;
+  tamirType: IstamirType
   tamirTuriId?: number;
   vagonTuri?: VagonTuri;
   tamirTuri?: TamirTuri;
@@ -73,15 +77,15 @@ export interface TamirJadval {
   //endi
   tamirTuri: TamirTuri;
   rejalashtirilganSana: Date;
-  bajarilganSana?: Date;
-  holati: string;
+  amalgaOshirilganSana?: Date;
+  holati: TamirHolati;
 }
 
-export interface TamirTuri {
-  id: number;
-  nomi: string;
-  kodi: string;
-}
+// export interface TamirTuri {
+//   id: number;
+//   nomi: string;
+//   kodi: string;
+// }
 
 export interface VagonlarResponse {
   items: Vagon[];

@@ -25,6 +25,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useCreateVagonTuri, useUpdateVagonTuri } from '@/lib/hooks/useVagon'
 import { Train } from 'lucide-react'
+import { IstamirType } from '@/types/tamir'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 
 const formSchema = z.object({
   nomi: z.string()

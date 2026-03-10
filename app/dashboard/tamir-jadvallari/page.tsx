@@ -60,7 +60,7 @@ import {
 } from 'lucide-react'
 import { useTamirJadvallari, useDeleteTamirJadval, useTamirJadvalStatistics } from '@/lib/hooks/useTamirJadval'
 import { useUpdateTamirJadvalStatus } from '@/lib/hooks/useTamirJadval'
-import { TamirHolati } from '@/types/tamir-jadval'
+import { TamirHolati, TamirJadval } from '@/types/tamir-jadval'
 import { format } from 'date-fns'
 import { uz } from 'date-fns/locale'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -76,6 +76,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { VagonHolati } from '@/types/vagon'
+import { useUpdateVagonHolati } from '@/lib/hooks/useVagon'
 
 const holatColors = {
   [TamirHolati.REJALASHTIRILGAN]: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
@@ -120,24 +122,34 @@ export default function TamirJadvallariPage() {
 
   const deleteMutation = useDeleteTamirJadval()
   const updateStatusMutation = useUpdateTamirJadvalStatus()
+      const updateHolatiMutation = useUpdateVagonHolati()
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: TamirJadval) => {
     setSelectedItem(item)
     setDialogOpen(true)
   }
 
-  const handleComplete = (item: any) => {
+  const handleComplete = (item: TamirJadval) => {
     setSelectedForComplete(item)
     setCompleteDialogOpen(true)
   }
 
-  const handleStatusChange = async (id: number, holati: TamirHolati) => {
+  const handleStatusChange = async (tamir: TamirJadval, holati: TamirHolati) => {
     try {
-      await updateStatusMutation.mutateAsync({ id, holati })
+      handleHolatChange(tamir.vagonId, holati==='jarayonda'?VagonHolati.REPAIR:VagonHolati.ACTIVE)
+      await updateStatusMutation.mutateAsync({ id: tamir.id, holati })
     } catch (error) {
       console.error('Holatni o\'zgartirishda xatolik:', error)
     }
   }
+
+  const handleHolatChange = async (id: number, holati: VagonHolati) => {
+      try {
+        await updateHolatiMutation.mutateAsync({ id, holati })
+      } catch (error) {
+        console.error('Holatni o\'zgartirishda xatolik:', error)
+      }
+    }
 
   const handleDelete = async () => {
     if (itemToDelete) {
@@ -453,7 +465,7 @@ export default function TamirJadvallariPage() {
                                     <Edit className="h-4 w-4 mr-2" />
                                     Tahrirlash
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleStatusChange(item.id, TamirHolati.JARAYONDA)}>
+                                  <DropdownMenuItem onClick={() => handleStatusChange(item, TamirHolati.JARAYONDA)}>
                                     <PlayCircle className="h-4 w-4 mr-2 text-amber-600" />
                                     Jarayonga o'tkazish
                                   </DropdownMenuItem>
@@ -473,7 +485,7 @@ export default function TamirJadvallariPage() {
 
                               {item.holati !== TamirHolati.TUGALLANGAN && (
                                 <DropdownMenuItem 
-                                  onClick={() => handleStatusChange(item.id, TamirHolati.BEKOR_QILINGAN)}
+                                  onClick={() => handleStatusChange(item, TamirHolati.BEKOR_QILINGAN)}
                                   className="text-red-600"
                                 >
                                   <XCircle className="h-4 w-4 mr-2" />

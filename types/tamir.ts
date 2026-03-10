@@ -1,3 +1,5 @@
+import { VagonTuri } from "./vagon";
+
 // types/tamir.ts
 export interface TamirTuri {
   id: number;
@@ -9,10 +11,17 @@ export interface TamirTuri {
   tamirJadvallari?: TamirJadval[];
 }
 
+export enum IstamirType {
+  MASOFA = 'masofa',
+  VAQT = 'vaqt',
+  IKKALASI = 'ikkalasi'
+}
+
 export interface CreateTamirTuriDto {
   nomi: string;
   kodi: string;
   tavsifi?: string;
+  // tamirType: IstamirType;
 }
 
 export interface UpdateTamirTuriDto {
@@ -27,6 +36,7 @@ export interface VagonTamirMuddati {
   tamirTuriId: number;
   muddatOy: number;
   maksimalKm: number;
+  tamirType: IstamirType;
   izoh?: string;
   yaratilganVaqt: Date;
   vagonTuri?: {
@@ -45,8 +55,9 @@ export interface VagonTamirMuddati {
 export interface CreateVagonTamirMuddatiDto {
   vagonTuriId: number;
   tamirTuriId: number;
-  muddatOy: number;
-  maksimalKm: number;
+  muddatOy?: number;
+  maksimalKm?: number;
+  tamirType: IstamirType;
   izoh?: string;
 }
 
@@ -55,6 +66,7 @@ export interface UpdateVagonTamirMuddatiDto {
   tamirTuriId?: number;
   muddatOy?: number;
   maksimalKm?: number;
+  tamirType?: IstamirType;
   izoh?: string;
 }
 
@@ -104,4 +116,25 @@ export interface TamirTuriDropdownItem {
   id: number;
   nomi: string;
   kodi: string;
+  yaratilganVaqt: Date
+}
+
+export interface MatrixViewProps {
+  data?: {
+    items: VagonTamirMuddati[];
+    total: number;
+  };
+  vagonTurlari?: {
+    items: VagonTuri[];
+    total: number;
+  };
+  tamirTurlari?: TamirTuri[];
+  // onEdit: (item: Partial<VagonTamirMuddati> & { vagonTuri?: VagonTuri; tamirTuri?: TamirTuri }) => void;
+  onEdit: (item: Partial<VagonTamirMuddati>) => void;
+  onDelete: (item: VagonTamirMuddati) => void;
+}
+
+export interface MatrixRow {
+  vagonTur: VagonTuri;
+  muddatlar: Record<number, VagonTamirMuddati | undefined>;
 }

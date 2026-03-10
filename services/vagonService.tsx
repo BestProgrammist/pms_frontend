@@ -26,6 +26,8 @@ export const vagonApi = {
   },
 
   createVagonTuri: async (data: CreateVagonTuriDto): Promise<VagonTuri> => {
+    console.log(data);
+    
     const response = await apiClient.post('/vagon-turlari', data);
     return response.data;
   },

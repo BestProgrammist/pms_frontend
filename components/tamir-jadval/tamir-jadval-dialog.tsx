@@ -30,7 +30,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { useVagonlar } from '@/lib/hooks/useVagon'
+import { useUpdateVagonHolati, useVagonlar } from '@/lib/hooks/useVagon'
 import { useTamirTuriDropdown } from '@/lib/hooks/useTamir'
 import { useTashkilotDropdown } from '@/lib/hooks/useTashkilot'
 import { useVagonTamirMuddatlari } from '@/lib/hooks/useTamir'
@@ -38,6 +38,7 @@ import { useCreateTamirJadval, useUpdateTamirJadval } from '@/lib/hooks/useTamir
 import { TamirHolati } from '@/types/tamir-jadval'
 import { Calendar, Wrench } from 'lucide-react'
 import { useAuth } from '../providers/AuthProvider'
+import { VagonHolati } from '@/types/vagon'
 
 const formSchema = z.object({
   vagonId: z.number({
@@ -75,8 +76,8 @@ interface TamirJadvalDialogProps {
 }
 
 export function TamirJadvalDialog({ open, onOpenChange, tamirJadval, onSuccess }: TamirJadvalDialogProps) {
-  const { user } = useAuth()
   const { data: vagonlar } = useVagonlar({ limit: 100 })
+    const updateHolatiMutation = useUpdateVagonHolati()
   const { data: tamirTurlari } = useTamirTuriDropdown()
   const { data: tashkilotlar } = useTashkilotDropdown()
   const [selectedVagonTuriId, setSelectedVagonTuriId] = useState<number | undefined>()
@@ -135,6 +136,14 @@ export function TamirJadvalDialog({ open, onOpenChange, tamirJadval, onSuccess }
       setSelectedVagonTuriId(selectedVagon.vagonTuriId)
     }
   }
+
+  const handleHolatChange = async (id: number, holati: VagonHolati) => {
+      try {
+        await updateHolatiMutation.mutateAsync({ id, holati })
+      } catch (error) {
+        console.error('Holatni o\'zgartirishda xatolik:', error)
+      }
+    }
 
   const onSubmit = async (values: FormValues) => {
     try {

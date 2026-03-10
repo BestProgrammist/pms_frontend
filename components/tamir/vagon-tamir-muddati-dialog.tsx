@@ -34,6 +34,7 @@ import { useVagonTurlari } from '@/lib/hooks/useVagon'
 import { useTamirTuriDropdown } from '@/lib/hooks/useTamir'
 import { useCreateVagonTamirMuddati, useUpdateVagonTamirMuddati } from '@/lib/hooks/useTamir'
 import { Clock } from 'lucide-react'
+import { IstamirType } from '@/types/tamir'
 
 const formSchema = z.object({
   vagonTuriId: z.number({
@@ -42,12 +43,13 @@ const formSchema = z.object({
   tamirTuriId: z.number({
     error: 'Ta\'mir turini tanlang',
   }),
-  muddatOy: z.number()
-    .min(1, 'Muddat kamida 1 oy bo\'lishi kerak')
-    .max(120, 'Muddat 120 oydan oshmasligi kerak'),
-  maksimalKm: z.number()
-    .min(0, 'Maksimal km manfiy bo\'lishi mumkin emas')
-    .max(1000000, 'Maksimal km 1,000,000 dan oshmasligi kerak'),
+  muddatOy: z.number().default(0)
+    .optional(),
+  maksimalKm: z.number().default(0)
+    .optional(),
+  tamirType: z.nativeEnum(IstamirType, {
+      error: 'Ta\'mirga kirish turini tanlang',
+    }),
   izoh: z.string()
     .max(500, 'Izoh 500 ta belgidan oshmasligi kerak')
     .optional(),
@@ -77,6 +79,7 @@ export function VagonTamirMuddatiDialog({ open, onOpenChange, muddat, onSuccess 
       muddatOy: undefined,
       maksimalKm: undefined,
       izoh: '',
+      tamirType: IstamirType.VAQT,
     },
   })
 
@@ -88,6 +91,7 @@ export function VagonTamirMuddatiDialog({ open, onOpenChange, muddat, onSuccess 
         muddatOy: muddat.muddatOy,
         maksimalKm: muddat.maksimalKm,
         izoh: muddat.izoh || '',
+        tamirType: muddat.tamirType
       })
     } else {
       form.reset({
@@ -96,6 +100,7 @@ export function VagonTamirMuddatiDialog({ open, onOpenChange, muddat, onSuccess 
         muddatOy: undefined,
         maksimalKm: undefined,
         izoh: '',
+        tamirType: IstamirType.VAQT,
       })
     }
   }, [muddat, form])
@@ -190,13 +195,38 @@ export function VagonTamirMuddatiDialog({ open, onOpenChange, muddat, onSuccess 
               )}
             />
 
+            <FormField
+                control={form.control}
+                name="tamirType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vagon ta'mirga kirish turi *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Ta'mirga kirish turini tanlang" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(IstamirType).map((tamirType) => (
+                          <SelectItem key={tamirType} value={tamirType}>
+                            {tamirType.charAt(0).toUpperCase() + tamirType.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+                />
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="muddatOy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Muddat (oy) *</FormLabel>
+                    <FormLabel>Muddat (oy)</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
@@ -216,7 +246,7 @@ export function VagonTamirMuddatiDialog({ open, onOpenChange, muddat, onSuccess 
                 name="maksimalKm"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Maksimal km *</FormLabel>
+                    <FormLabel>Maksimal (km)</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 

@@ -2,7 +2,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
-import { useAuth } from '@/lib/api/hooks/useAuth'
 import { chatService } from '@/lib/api/chat'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,6 +25,7 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 import { uz } from 'date-fns/locale'
 import { toast } from 'sonner'
+import { useAuth } from '../providers/AuthProvider'
 
 interface Message {
   id: string

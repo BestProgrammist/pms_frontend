@@ -25,6 +25,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useCreateTamirTuri, useUpdateTamirTuri } from '@/lib/hooks/useTamir'
 import { Wrench } from 'lucide-react'
+import { TamirTuri } from '@/types/tamir'
 
 const formSchema = z.object({
   nomi: z.string()
@@ -44,7 +45,7 @@ type FormValues = z.infer<typeof formSchema>
 interface TamirTuriDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  tamirTuri?: any
+  tamirTuri?: TamirTuri
   onSuccess?: () => void
 }
 

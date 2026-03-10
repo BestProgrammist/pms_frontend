@@ -52,7 +52,7 @@ import {
 } from 'lucide-react'
 import { useVagon, useDeleteVagon, useUpdateVagonHolati, useUpdateVagonKm } from '@/lib/hooks/useVagon'
 import { useVagonTurlari } from '@/lib/hooks/useVagon'
-import { VagonHolati } from '@/types/vagon'
+import { Vagon, VagonHolati } from '@/types/vagon'
 import { format } from 'date-fns'
 import { uz } from 'date-fns/locale'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -68,6 +68,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { VagonDialog } from '@/components/vagon/vagon-dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 const holatColors = {
   [VagonHolati.ACTIVE]: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
@@ -104,6 +106,15 @@ export default function VagonDetailPage() {
   const { data: vagonTurlari } = useVagonTurlari({ limit: 100 })
   const deleteMutation = useDeleteVagon()
   const updateHolatiMutation = useUpdateVagonHolati()
+
+  console.log(vagon);
+  
+  
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<{ id: number; nomi: string } | null>(null)
+  
   const updateKmMutation = useUpdateVagonKm()
 
   const kmForm = useForm<z.infer<typeof kmSchema>>({
@@ -113,16 +124,32 @@ export default function VagonDetailPage() {
     },
   })
 
+  const handleEdit = (item: Vagon) => {
+    setSelectedItem(item)
+    setDialogOpen(true)
+  }
+
   const handleDelete = async () => {
-    if (window.confirm(`"${vagon?.raqami}" vagonini o'chirishni tasdiqlaysizmi?`)) {
+    if (itemToDelete) {
       try {
-        await deleteMutation.mutateAsync(id)
-        router.push('/dashboard/vagonlar')
+        await deleteMutation.mutateAsync(itemToDelete.id)
+        setDeleteDialogOpen(false)
+        setItemToDelete(null)
       } catch (error) {
         console.error('O\'chirishda xatolik:', error)
       }
     }
   }
+  // const handleDelete = async () => {
+  //   if (window.confirm(`"${vagon?.raqami}" vagonini o'chirishni tasdiqlaysizmi?`)) {
+  //     try {
+  //       await deleteMutation.mutateAsync(id)
+  //       router.push('/dashboard/vagonlar')
+  //     } catch (error) {
+  //       console.error('O\'chirishda xatolik:', error)
+  //     }
+  //   }
+  // }
 
   const handleHolatChange = async (holati: VagonHolati) => {
     try {
@@ -193,13 +220,16 @@ export default function VagonDetailPage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" asChild>
-            <Link href={`/dashboard/vagonlar/${id}/edit`}>
+          <Button variant="outline" asChild onClick={()=>handleEdit(vagon)}>
+            <span>
               <Edit className="h-4 w-4 mr-2" />
               Tahrirlash
-            </Link>
+            </span>
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
+          <Button variant="destructive" onClick={()=>{
+            setItemToDelete({ id: vagon.id, nomi: vagon.raqami })
+            setDeleteDialogOpen(true)
+          }}>
             <Trash2 className="h-4 w-4 mr-2" />
             O'chirish
           </Button>
@@ -358,22 +388,22 @@ export default function VagonDetailPage() {
                               {format(new Date(jadval.rejalashtirilganSana), 'dd.MM.yyyy')}
                             </TableCell>
                             <TableCell>
-                              {jadval.bajarilganSana 
-                                ? format(new Date(jadval.bajarilganSana), 'dd.MM.yyyy')
+                              {jadval.amalgaOshirilganSana 
+                                ? format(new Date(jadval.amalgaOshirilganSana), 'dd.MM.yyyy')
                                 : '—'}
                             </TableCell>
                             <TableCell>
                               <Badge className={
-                                jadval.holati === 'bajarilgan' 
+                                jadval.holati === 'tugallangan' 
                                   ? 'bg-emerald-100 text-emerald-800'
                                   : 'bg-amber-100 text-amber-800'
                               }>
-                                {jadval.holati === 'bajarilgan' ? (
+                                {jadval.holati === 'tugallangan' ? (
                                   <CheckCircle2 className="h-3 w-3 mr-1" />
                                 ) : (
                                   <Clock className="h-3 w-3 mr-1" />
                                 )}
-                                {jadval.holati === 'bajarilgan' ? 'Bajarilgan' : 'Kutilmoqda'}
+                                {jadval.holati === 'tugallangan' ? 'Bajarilgan' : jadval.holati === 'rejalashtirilgan'?'Kutilmoqda': 'Jarayonda'}
                               </Badge>
                             </TableCell>
                           </TableRow>
@@ -401,7 +431,7 @@ export default function VagonDetailPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {vagon.tamirJadvallari && vagon.tamirJadvallari?.filter(j => j.holati !== 'bajarilgan').length > 0 ? (
+                  {vagon.tamirJadvallari && vagon.tamirJadvallari?.filter(j => j.holati !== 'tugallangan').length > 0 ? (
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -413,7 +443,7 @@ export default function VagonDetailPage() {
                       </TableHeader>
                       <TableBody>
                         {vagon.tamirJadvallari
-                          .filter(j => j.holati !== 'bajarilgan')
+                          .filter(j => j.holati !== 'tugallangan')
                           .map((jadval) => {
                             const today = new Date()
                             const planDate = new Date(jadval.rejalashtirilganSana)
@@ -455,6 +485,43 @@ export default function VagonDetailPage() {
         </motion.div>
       </div>
 
+      {/* Vagon Dialog */}
+            <VagonDialog
+              open={dialogOpen}
+              onOpenChange={setDialogOpen}
+              vagon={selectedItem}
+              onSuccess={() => {
+                setDialogOpen(false)
+                setSelectedItem(null)
+              }}
+            />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Vagonni o'chirish</AlertDialogTitle>
+            <AlertDialogDescription>
+              {itemToDelete && (
+                <span>
+                  <span className="font-bold">"{itemToDelete.nomi}"</span> vagonini o'chirishni tasdiqlaysizmi?
+                  <br />
+                  Bu amalni ortga qaytarib bo'lmaydi.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              O'chirish
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* KM Update Dialog */}
       <Dialog open={kmDialogOpen} onOpenChange={setKmDialogOpen}>
         <DialogContent>
