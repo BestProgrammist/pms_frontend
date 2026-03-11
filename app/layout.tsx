@@ -10,8 +10,8 @@ import { AuthProvider } from "@/components/providers/AuthProvider";
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Talim Olami - O\'quv Markazi',
-  description: 'Professional ta\'lim markazi',
+  title: 'PMS dasturi',
+  description: 'PMS tashkiloti dasturi',
 }
 
 export default function RootLayout({
