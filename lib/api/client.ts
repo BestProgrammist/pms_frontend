@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'pmsapi-production.up.railway.app/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://pmsrailway.uz/api',
   headers: {
     'Content-Type': 'application/json',
   },

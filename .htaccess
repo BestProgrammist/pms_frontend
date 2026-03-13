@@ -1,0 +1,11 @@
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+SetEnv NODE_ENV production
+SetEnv PORT 8080
+SetEnv DB_HOST localhost
+SetEnv DB_DATABASE pmsrailw_pmsdb
+SetEnv DB_USERNAME pmsrailw_pmsuser
+SetEnv DB_PASSWORD pmsrailw_pmspassword
+SetEnv JWT_SECRET your_jwt_secret
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
