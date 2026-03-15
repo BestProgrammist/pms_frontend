@@ -8,18 +8,12 @@ import {
   FileText,
   Truck,
   Users,
-  Calendar,
-  BarChart3,
-  Folder,
-  Settings,
   Bell,
   ChevronLeft,
-  ChevronRight,
-  Building,
+  ChevronRight
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "../providers/AuthProvider"
 
@@ -30,15 +24,8 @@ const navItems = [
   { name: "Vagonlar", href: "/dashboard/vagons", icon: Truck},
   { name: "Ta'mir turlari", href: "/dashboard/tamir-turlari", icon: FileText },
   { name: "Vagon ta'mir muddatlari", href: "/dashboard/vagon-tamir-muddatlari", icon: Truck},
-  // { name: "Bo'limlar", href: "/departments", icon: FileText, badge: 5 },
-  // { name: "Lokomotivlar", href: "/locomotives", icon: Truck, badge: 42  },
   { name: "Xodimlar", href: "/dashboard/users", icon: Users },
   { name: "Tashkilotlar", href: "/dashboard/tashkilot", icon: Home },
-  // { name: "Uzel agregatlari", href: "/uzelagregats", icon: FileText, badge: 7 },
-  // { name: "Kalendar", href: "/calendar", icon: Calendar },
-  // { name: "Hisobotlar", href: "/dashboard/reports", icon: BarChart3 },
-  // { name: "Arxiv", href: "/archive", icon: Folder },
-  // { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
 ]
 
 export default function Sidebar() {
@@ -86,11 +73,6 @@ export default function Sidebar() {
                 {!collapsed && (
                   <>
                     <span className="ml-3">{item.name}</span>
-                    {/* {item.badge && (
-                      <Badge className="ml-auto" variant="destructive">
-                        {item.badge}
-                      </Badge>
-                    )} */}
                   </>
                 )}
               </Link>
@@ -105,20 +87,22 @@ export default function Sidebar() {
       <div className={`p-3 ${collapsed ? "flex justify-center" : ""}`}>
         <div className={`flex items-center ${collapsed ? "justify-center" : ""}`}>
           <Avatar className="h-8 w-8">
-            {/* <AvatarImage src="/avatar.jpg" alt="Akmal Rajabov" /> */}
             <AvatarFallback className="bg-primary text-primary-foreground">AR</AvatarFallback>
           </Avatar>
           
           {!collapsed && (
+            <div className="flex">
             <div className="ml-3 flex-1">
               <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
               <p className="text-xs text-muted-foreground">{user?.role}</p>
+              
             </div>
+            <Button variant="ghost" size="icon" className="h-8 w-8 ml-2">
+            <Bell className="h-4 w-4" />
+          </Button></div>
           )}
           
-          <Button variant="ghost" size="icon" className="h-8 w-8 ml-2">
-            <Bell className="h-4 w-4" />
-          </Button>
+          
         </div>
       </div>
     </aside>

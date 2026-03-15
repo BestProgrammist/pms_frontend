@@ -51,7 +51,6 @@ import {
   Wrench,
   Truck,
   Building2,
-  Clock,
   CheckCircle2,
   XCircle,
   PlayCircle,
@@ -62,7 +61,6 @@ import { useTamirJadvallari, useDeleteTamirJadval, useTamirJadvalStatistics } fr
 import { useUpdateTamirJadvalStatus } from '@/lib/hooks/useTamirJadval'
 import { TamirHolati, TamirJadval } from '@/types/tamir-jadval'
 import { format } from 'date-fns'
-import { uz } from 'date-fns/locale'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TamirJadvalDialog } from '@/components/tamir-jadval/tamir-jadval-dialog'
 import { CompleteTamirDialog } from '@/components/tamir-jadval/complete-tamir-dialog'
@@ -169,7 +167,7 @@ export default function TamirJadvallariPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        className="flex flex-col gap-2"
       >
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -303,7 +301,7 @@ export default function TamirJadvallariPage() {
                   className="pl-9"
                 />
               </div>
-              <div className="flex gap-3">
+              <div className="flex relative">
                 <Select
                   value={holatFilter}
                   onValueChange={(value) => setHolatFilter(value as TamirHolati | 'all')}
@@ -321,7 +319,8 @@ export default function TamirJadvallariPage() {
                     ))}
                   </SelectContent>
                 </Select>
-
+              </div>
+              <div className='flex relative'>
                 <Button variant="outline" onClick={() => refetch()} className="gap-2">
                   <RefreshCw className="h-4 w-4" />
                   Yangilash
@@ -337,8 +336,9 @@ export default function TamirJadvallariPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
+        className=""
       >
-        <Card className="border-2">
+        <Card className="border-2 relative flex w-full">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Wrench className="h-5 w-5 text-primary" />
@@ -356,6 +356,8 @@ export default function TamirJadvallariPage() {
                 ))}
               </div>
             ) : (
+              <div className='relative flex w-full '>
+              <div className='relative w-full overflow-x-auto'>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -541,6 +543,8 @@ export default function TamirJadvallariPage() {
                   )}
                 </TableBody>
               </Table>
+              </div>
+              </div>
             )}
 
             {/* Pagination */}

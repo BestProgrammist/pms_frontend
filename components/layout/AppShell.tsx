@@ -41,10 +41,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0"> {/* min-w-0 qo'shildi */}
         <Navbar />
-        <main className="flex-1 overflow-auto p-6 bg-muted/10">
+        {/* <main className="flex-1 overflow-auto p-6 bg-muted/10"> */}
+        <main className="flex-1 overflow-auto bg-muted/10">
+          {/* paddingni ichkaridagi div ga o'tkazdik */}
+          <div className="p-6 h-full">
           {children}
+          </div>
         </main>
       </div>
     </div>
